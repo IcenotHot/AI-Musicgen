@@ -1,0 +1,90 @@
+<div class="mt-3">
+                                    <button class="btn btn-interaction btn-like like-btn" data-audio="<?php echo $item['id']; ?>">
+                                        👍 <span class="like-count" id="like-count-<?php echo $item['id']; ?>">
+                                            <?php 
+                                                echo mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM likes WHERE audio_id = '{$item['id']}' AND type = 'like'"))['total']; 
+                                            ?>
+                                        </span>
+                                    </button>
+                                    <button class="btn btn-interaction btn-dislike dislike-btn" data-audio="<?php echo $item['id']; ?>">
+                                        👎 <span class="dislike-count" id="dislike-count-<?php echo $item['id']; ?>">
+                                            <?php 
+                                                echo mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM likes WHERE audio_id = '{$item['id']}' AND type = 'dislike'"))['total']; 
+                                            ?>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="comment-section">
+                                <form action="comment.php" method="POST" class="comment-form">
+                                    <input type="hidden" name="audio_id" value="<?php echo $item['id']; ?>">
+                                    <textarea name="comment_text" class="form-control" rows="3" placeholder="แสดงความคิดเห็น..." required></textarea>
+                                    <button type="submit" class="btn btn-comment">ส่งความคิดเห็น</button>
+                                </form>
+
+                                <div class="comments-list">
+                                    <?php
+                                        $query_comments = mysqli_query($conn, "SELECT comments.*, user.username FROM comments JOIN user ON comments.user_id = user.id WHERE comments.audio_id = '{$item['id']}' ORDER BY comments.created_at DESC");
+                                        
+                                        if (mysqli_num_rows($query_comments) > 0) {
+                                            while ($comment = mysqli_fetch_assoc($query_comments)) {
+                                                echo "<div class='comment-item'>";
+                                                echo "<div class='comment-author'>{$comment['username']}</div>";
+                                                echo "<div class='comment-text'>{$comment['comment_text']}</div>";
+                                                echo "<div class='comment-time'>{$comment['created_at']}</div>";
+                                                echo "</div>";
+                                            }
+                                        } else {
+                                            echo "<div class='text-center text-muted py-3'>ยังไม่มีความคิดเห็น</div>";
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+
+CREATE TABLE my_user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+        ON UPDATE CURRENT_TIMESTAMP
+); 
+CREATE TABLE password_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+        ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES my_user(id) ON DELETE CASCADE
+);
+
+SELECT * 
+FROM your_table
+LIMIT 3;
+
+เรียงตามเวลา
+SELECT * 
+FROM your_table
+ORDER BY created_at ASC;
+
+SELECT * 
+FROM your_table
+ORDER BY created_at DESC
+LIMIT 3;
+
+SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate
+FROM Orders
+INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+
+SELECT likes.audio_id ,likes.user_id ,likes.type
+FROM `likes` 
+
+SELECT 
+    u.id AS user_id,
+    u.username,
+    COUNT(CASE WHEN l.type = 'like' THEN 1 END) AS total_likes,
+    COUNT(CASE WHEN l.type = 'dislike' THEN 1 END) AS total_dislikes
+FROM user u
+JOIN upload up ON u.id = up.user_id   
+LEFT JOIN likes l ON u.id = l.user_id
+GROUP BY u.id, u.username;
