@@ -5,3 +5,4 @@ Using MusicGen, an automatic melody generation model, users can create new melod
 The system aims to make music creation more accessible for everyone, allowing beginners and professionals to experiment with AI-powered composition tools.
 
 The web platform is developed using Flask (Python) and PHP integrated with a MySQL(Xampp) database 
+<img width="1919" height="702" alt="image" src="https://github.com/user-attachments/assets/8ccef0d0-4286-4398-8c1b-6ed7c3ab327e" />
